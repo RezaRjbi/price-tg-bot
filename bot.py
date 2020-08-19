@@ -1,47 +1,19 @@
-import telegram
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
-import get_price
+from functionality import Functionality
+from telegram.ext import CommandHandler, MessageHandler, Filters
 
-token = ""  # get your own toke from @Botfather
-bot = telegram.Bot(token=token)
+token = ""  # get your own token from @Botfather and paste it between ""
+funcs = Functionality(token=token)
 
-updater = Updater(token=token, use_context=True)
-dispather = updater.dispatcher
+start_handler = CommandHandler("start", funcs.start)
+funcs.dispather.add_handler(start_handler)
 
+echo_handler = MessageHandler(Filters.text & (~Filters.command), funcs.echo)
+funcs.dispather.add_handler(echo_handler)
 
-def start(update, context):
-    msg = "از طریق دستور /price میتوانید از ربات استقاده کنید"
-    context.bot.send_message(chat_id=update.effective_chat.id, text=msg)
+price_handler = CommandHandler("price", funcs.price)
+funcs.dispather.add_handler(price_handler)
 
+unknown_handler = MessageHandler(Filters.command, funcs.unknown)
+funcs.dispather.add_handler(unknown_handler)
 
-start_handler = CommandHandler("start", start)
-dispather.add_handler(start_handler)
-
-
-def echo(update, context):
-    context.bot.send_message(chat_id=update.effective_chat.id, text=update.message.text)
-
-
-echo_handler = MessageHandler(Filters.text & (~Filters.command), echo)
-dispather.add_handler(echo_handler)
-
-
-def price(update, context):
-    message = get_price.get_price()
-    context.bot.send_message(chat_id=update.effective_chat.id, text=message)
-
-
-price_handler = CommandHandler("price", price)
-dispather.add_handler(price_handler)
-
-
-def unknown(update, context):
-    user_id = update.effective_chat.id
-    context.bot.send_message(chat_id=user_id,
-                             text=f"sorry i don'n recognize {update.message.text.split()[0]} as a command")
-
-
-unknown_handler = MessageHandler(Filters.command, unknown)
-dispather.add_handler(unknown_handler)
-
-updater.start_polling()
+funcs.updater.start_polling()
