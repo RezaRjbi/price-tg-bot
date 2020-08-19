@@ -8,6 +8,8 @@ import requests
 
 url = "https://www.tgju.org/"
 
+titles = ["بورس", "انس طلا", "مثقال طلا", "طلا 18", "سکه", "دلار", "یورو", "نفت برنت", "بیت کوین"]
+
 
 def get_price():
     result = []  # all prices will save in this list after each function call
@@ -18,11 +20,14 @@ def get_price():
     else:
         soup = bs4.BeautifulSoup(res.content, "html5lib")
         table = soup.select(".info-bar.mobile-hide")[0]  # first table at top of the site
-        prices = table.select(".high")  # get all boxes from table(gold, dollar etc)
-
-        for price in prices:
-            title = price.select("h3")[0].text
+        prices = table.select(".info-value")  # get all boxes from table(gold, dollar etc)
+        changes = table.select(".info-change")
+        for title, price, change in zip(titles, prices, changes):
             c_price = price.select(".info-price")[0].text  # current price
-            change = price.select(".info-change")[0].text  # change rate
-            result.append(f" {title}: {c_price}\nمیزان تغییر از اول امروز: {change}\n\n")
+            c_change = change.text  # change rate
+            result.append(f" {title}: {c_price}\nمیزان تغییر از اول امروز: {c_change}\n\n")
     return "".join(result)  # result as a string
+
+
+if __name__ == "__main__":
+    print(get_price())
