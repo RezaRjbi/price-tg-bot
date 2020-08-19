@@ -9,7 +9,7 @@ you can do this with a single command in terminal or cmd:
 `pip install python-telegram-bot`
 
 <strong>Note: if you are on a windows machine make sure to add python to the path.
-it's necessary for pip to work</stong>
+it's necessary for pip to work</strong>
 
 then you just have to run bot.py
 
