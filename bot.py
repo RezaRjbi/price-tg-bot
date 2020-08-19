@@ -1,5 +1,4 @@
 import telegram
-import logging
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 import get_price
 
